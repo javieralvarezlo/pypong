@@ -35,11 +35,14 @@ ball = pygame.Rect(0, 0, 20, 20)
 ball.center = window.center
 
 
+largefont = pygame.font.Font('freesansbold.ttf', 50)
+smallfont = pygame.font.Font('freesansbold.ttf', 30)
+
+
 
 def show_menu():
     global menu, multiplayer, singleplayer
-    largefont = pygame.font.Font('freesansbold.ttf', 50)
-    smallfont = pygame.font.Font('freesansbold.ttf', 30)
+    
 
     # title
     maintext = largefont.render("PyPong!", True, white)
@@ -58,6 +61,7 @@ def show_menu():
     multitext = smallfont.render("Multiplayer", True, black)
     multitext_rect = multitext.get_rect()
     multitext_rect.center = (WIDTH/2, HEIGHT/2 + 20)
+    
     pygame.draw.rect(screen, white, multitext_rect)
     screen.blit(multitext, multitext_rect)
 
@@ -71,7 +75,6 @@ def show_menu():
             if multitext_rect.collidepoint(mouse):
                 multiplayer = True
                 menu = False
-                screen.fill(black)
 
     pygame.display.flip()
 
@@ -132,13 +135,43 @@ def ball_collide():
         left_paddle.midleft = window.midleft
         right_paddle.midright = window.midright
         
+def score_text():
+    leftscore = largefont.render(str(score[0]), True, white)
+    leftscore_text = leftscore.get_rect()
+    leftscore_text.center = (WIDTH/4, HEIGHT/8)
         
+    screen.blit(leftscore, leftscore_text)
+    
+    rightscore = largefont.render(str(score[1]), True, white)
+    rightscore_text = rightscore.get_rect()
+    rightscore_text.center = (3 * WIDTH/4, HEIGHT/8)
+    
+    screen.blit(rightscore, rightscore_text)
+        
+        
+def restart():
+    global score, left_paddle, right_paddle
+    left_paddle.midleft = window.midleft
+    right_paddle.midright = window.midright
+    screen.fill(black)
+    score = [0, 0]
+    left_paddle.midleft = window.midleft
+    right_paddle.midright = window.midright
+                
+                
 if __name__ == "__main__":
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+                
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                menu = True
+                multiplayer = False
+                singleplayer = False
+                restart()
+                
             
             if not menu:
                 if event.type == pygame.KEYDOWN:
@@ -173,6 +206,8 @@ if __name__ == "__main__":
             draw_paddles()
             keep_paddles()
             ball_collide()
+            score_text()
+            
             
             pygame.display.flip()
             fps.tick(260)
