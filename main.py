@@ -147,6 +147,12 @@ if __name__ == "__main__":
                     if event.key == pygame.K_DOWN:
                         left_paddle = left_paddle.move(0, step)
                         
+                    if multiplayer:
+                        if event.key == pygame.K_w:
+                            right_paddle = right_paddle.move(0, -step)
+                        if event.key == pygame.K_s:
+                            right_paddle = right_paddle.move(0, step)
+                   
             
         if menu:
             show_menu()
