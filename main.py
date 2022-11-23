@@ -1,3 +1,10 @@
+"""
+PyPong game developed for
+Scripting Languages using pygame
+
+The game includes singleplayer
+and multiplayer modes
+"""
 import pygame
 import sys
 from random import randint, uniform
@@ -7,20 +14,20 @@ white = (255, 255, 255)
 WIDTH = 920
 HEIGHT = 720
 step = 15
-pygame.init()
+ball_speed = [-1, 0]
+score = [0, 0]
 
+pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 window = screen.get_rect()
 pygame.display.set_caption('PyPong!')
+pygame.key.set_repeat(50, 50)
 
 box1 = pygame.Rect(0, 0, 30, 30)
 box1.center = window.center
 box2 = pygame.Rect(0, 0, 30, 60)
 box2.midleft = window.midleft
 
-ball_speed = [-1, 0]
-score = [0, 0]
-pygame.key.set_repeat(50, 50)
 fps = pygame.time.Clock()
 
 menu = True
@@ -40,6 +47,10 @@ smallfont = pygame.font.Font('freesansbold.ttf', 30)
 
 
 def show_menu():
+    """
+    Shows the menu options and handles
+    the click event
+    """
     global menu, multiplayer, singleplayer
 
     # title
@@ -91,6 +102,10 @@ def draw_ball():
 
 
 def keep_paddles():
+    """
+    Checks if the paddles are out
+    of the screen and keep them in
+    """
     if left_paddle.top < window.top:
         left_paddle.top = window.top
     if left_paddle.bottom > window.bottom:
@@ -102,10 +117,15 @@ def keep_paddles():
 
 
 def ball_collide():
+    """
+    Handles the ball collision
+    and all the posibilities
+    """
     global ball_speed
     # top and bottom collision
     if ball.top < window.top or ball.bottom > window.bottom:
         ball_speed[1] = -ball_speed[1]
+        # multiplies by 1.1 to slightly increase the speed
         ball_speed[0] = ball_speed[0] * 1.1
         ball_speed[1] = ball_speed[1] * 1.1
 
@@ -113,6 +133,7 @@ def ball_collide():
     if ball.colliderect(left_paddle) or ball.colliderect(right_paddle):
         ball_speed[0] = -ball_speed[0]
         ball_speed[1] = randint(-2, 2)
+        # multiplies by 1.1 to slightly increase the speed
         ball_speed[0] = ball_speed[0] * 1.1
         ball_speed[1] = ball_speed[1] * 1.1
 
@@ -134,6 +155,9 @@ def ball_collide():
 
 
 def score_text():
+    """
+    Draws the scores text
+    """
     leftscore = largefont.render(str(score[0]), True, white)
     leftscore_text = leftscore.get_rect()
     leftscore_text.center = (WIDTH/4, HEIGHT/8)
@@ -148,6 +172,9 @@ def score_text():
 
 
 def restart():
+    """
+    Restart the global status
+    """
     global score, left_paddle, right_paddle
     left_paddle.midleft = window.midleft
     right_paddle.midright = window.midright
@@ -164,6 +191,7 @@ if __name__ == "__main__":
                 pygame.quit()
                 sys.exit()
 
+            # back to menu
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 menu = True
                 multiplayer = False
@@ -187,6 +215,7 @@ if __name__ == "__main__":
             show_menu()
         else:
             if singleplayer:
+                # random speed for the machine
                 if ball_speed[1] > 0:
                     pos = uniform(1, ball_speed[1])
                     right_paddle = right_paddle.move(0, pos)
